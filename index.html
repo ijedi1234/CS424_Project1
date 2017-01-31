@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+    #orbitAnim {
+      position: fixed;
+      top: 0;
+      right: 0;
+      font-size: 50px;
+      background-color: #f44336;
+      border-radius: 12px;
+      //border-style: solid;
+      border-width: 5px;
+      border-color: #ff9900;
+    }
+    .nameReader {
+      position: fixed;
+      top: 8%;
+      right: 0;
+      width:400px;
+    }
+    .timeReader {
+      position: fixed;
+      top: 12%;
+      right: 0;
+      width:400px;
+    }
+    .nameReaderLbl {
+      position: fixed;
+      top: 8%;
+      right: 410px;
+    }
+    .timeReaderLbl {
+      position: fixed;
+      top: 12%;
+      right: 410px;
+    }
+    </style>
+  </head>
+  <body>
+    <button type="button" id="orbitAnim" onclick="orbitAnimBtnClicked()">Toggle Orbit Animation</button>
+    <label class="nameReaderLbl">Game Name:</label>
+    <input type="text" class="nameReader" disabled>
+    <label class="timeReaderLbl">Time:</label>
+    <input type="text" class="timeReader" disabled>
+    <script type="text/javascript">
+      var body = d3.select("body");
+      var now = Date.now();
+
+      var dataset = {
+    "price": [
+        {
+            "value": "0",
+            "games": [
+                {
+                    "game": "Zombie Panic! Source",
+                    "img": "http://i.imgur.com/6qzZFSl.jpg",
+                    "hours": "878.89",
+                    "overall": "6"
+                },
+                {
+                    "game": "Star Trek Online",
+                    "img": "http://i.imgur.com/cUI9mxF.jpg",
+                    "hours": "490.60",
+                    "overall": "5"
+                },
+                {
+                    "game": "Team Fortress 2",
+                    "img": "http://i.imgur.com/bf6UpiV.jpg",
+                    "hours": "119.74",
+                    "overall": "6"
+                },
+                {
+                    "game": "Life is Strange",
+                    "img": "http://i.imgur.com/7p1dL6g.jpg",
+                    "hours": "24.67",
+                    "overall": "7"
+                }
+            ]
+        },
+        {
+            "value": "2.99",
+            "games": [
+                {
+                    "game": "LYNE",
+                    "img": "http://i.imgur.com/UjXtgyb.jpg",
+                    "hours": "34.22",
+                    "overall": "7"
+                }
+            ]
+        },
+        {
+            "value": "4.99",
+            "games": [
+                {
+                    "game": "Deus Ex: Human Revolution",
+                    "img": "http://i.imgur.com/jEKj3PK.jpg",
+                    "hours": "79.20",
+                    "overall": "0"
+                },
+                {
+                    "game": "Hexcells Infinite",
+                    "img": "http://i.imgur.com/WLoFZsn.jpg",
+                    "hours": "76.3",
+                    "overall": "7"
+                },
+                {
+                    "game": "Dead Space",
+                    "img": "http://i.imgur.com/FjyJNJ3.jpg",
+                    "hours": "36.27",
+                    "overall": "6"
+                },
+                {
+                    "game": "Dead Space 2",
+                    "img": "http://i.imgur.com/hQmngUH.jpg",
+                    "hours": "18.24",
+                    "overall": "6"
+                }
+            ]
+        },
+        {
+            "value": "6.99",
+            "games": [
+                {
+                    "game": "Deus Ex: Game of the Year Edition",
+                    "img": "http://i.imgur.com/usTuXYE.jpg",
+                    "hours": "62.34",
+                    "overall": "7"
+                }
+            ]
+        },
+        {
+            "value": "7.99",
+            "games": [
+                {
+                    "game": "Half Life 2: Episode Two",
+                    "img": "http://i.imgur.com/YMU0lyr.jpg",
+                    "hours": "43.4",
+                    "overall": "7"
+                }
+            ]
+        },
+        {
+            "value": "9.99",
+            "games": [
+                {
+                    "game": "Garry's Mod",
+                    "img": "http://i.imgur.com/dzCLWXY.jpg",
+                    "hours": "1701.02",
+                    "overall": "7"
+                },
+                {
+                    "game": "Fallout: New Vegas",
+                    "img": "http://i.imgur.com/32HVBtL.jpg",
+                    "hours": "333.34",
+                    "overall": "7"
+                },
+                {
+                    "game": "Half Life 2",
+                    "img": "http://i.imgur.com/wDeygcW.jpg",
+                    "hours": "63.17",
+                    "overall": "7"
+                },
+                {
+                    "game": "Saints Row 2",
+                    "img": "http://i.imgur.com/3xQyfpw.jpg",
+                    "hours": "35.19",
+                    "overall": "5"
+                },
+                {
+                    "game": "DEFCON",
+                    "img": "http://i.imgur.com/8vU7TkQ.jpg",
+                    "hours": "19.25",
+                    "overall": "6"
+                }
+            ]
+        },
+        {
+            "value": "14.99",
+            "games": [
+                {
+                    "game": "Counter-Strike: Global Offensive",
+                    "img": "http://i.imgur.com/DcxKIhT.jpg",
+                    "hours": "449.77",
+                    "overall": "6"
+                },
+                {
+                    "game": "Just Cause 2",
+                    "img": "http://i.imgur.com/0GV4wam.jpg",
+                    "hours": "98.99",
+                    "overall": "6"
+                },
+                {
+                    "game": "Plague Inc: Evolved",
+                    "img": "http://i.imgur.com/CXIJ2Yi.jpg",
+                    "hours": "89.24",
+                    "overall": "6"
+                },
+                {
+                    "game": "Alpha Protocol",
+                    "img": "http://i.imgur.com/WG8LoY8.jpg",
+                    "hours": "51.62",
+                    "overall": "6"
+                },
+                {
+                    "game": "Saints Row: The Third",
+                    "img": "http://i.imgur.com/diRItP5.jpg",
+                    "hours": "33.14",
+                    "overall": "7"
+                },
+                {
+                    "game": "Saints Row IV",
+                    "img": "http://i.imgur.com/G15k3u8.jpg",
+                    "hours": "22.19",
+                    "overall": "6"
+                }
+            ]
+        },
+        {
+            "value": "19.99",
+            "games": [
+                {
+                    "game": "Empire: Total War",
+                    "img": "http://i.imgur.com/rTc0e31.jpg",
+                    "hours": "332.04",
+                    "overall": "6"
+                },
+                {
+                    "game": "Napoleon: Total War",
+                    "img": "http://i.imgur.com/sc0rfSd.jpg",
+                    "hours": "160.90",
+                    "overall": "6"
+                },
+                {
+                    "game": "Prototype",
+                    "img": "http://i.imgur.com/cCzHDts.jpg",
+                    "hours": "97.07",
+                    "overall": "6"
+                },
+                {
+                    "game": "Batman: Arkham City GOTY",
+                    "img": "http://i.imgur.com/EJXenT5.jpg",
+                    "hours": "90.65",
+                    "overall": "7"
+                },
+                {
+                    "game": "Batman: Arkham Origins",
+                    "img": "http://i.imgur.com/UTAXxg8.jpg",
+                    "hours": "77.22",
+                    "overall": "6"
+                },
+                {
+                    "game": "Deus Ex: Human Revolution - Director's Cut",
+                    "img": "http://i.imgur.com/oViLt9e.jpg",
+                    "hours": "69.04",
+                    "overall": "6"
+                },
+                {
+                    "game": "Crysis",
+                    "img": "http://i.imgur.com/pV3q7eW.jpg",
+                    "hours": "68.49",
+                    "overall": "6"
+                },
+                {
+                    "game": "Assassin's Creed",
+                    "img": "http://i.imgur.com/Hy5LAGT.jpg",
+                    "hours": "56.02",
+                    "overall": "6"
+                },
+                {
+                    "game": "Assassin's Creed Brotherhood",
+                    "img": "http://i.imgur.com/TrXf6nK.jpg",
+                    "hours": "37.87",
+                    "overall": "6"
+                },
+                {
+                    "game": "Fallout 3 - Game of the Year Edition",
+                    "img": "http://i.imgur.com/oaFQSah.jpg",
+                    "hours": "35.44",
+                    "overall": "6"
+                },
+                {
+                    "game": "Assassin's Creed II Deluxe Edition",
+                    "img": "http://i.imgur.com/oSKMFHv.jpg",
+                    "hours": "34.55",
+                    "overall": "6"
+                },
+                {
+                    "game": "Portal 2",
+                    "img": "http://i.imgur.com/nxwSh6i.jpg",
+                    "hours": "32.64",
+                    "overall": "7"
+                },
+                {
+                    "game": "Black Mesa",
+                    "img": "http://i.imgur.com/apujsk9.jpg",
+                    "hours": "30.92",
+                    "overall": "6"
+                },
+                {
+                    "game": "Tomb Raider 2013",
+                    "img": "http://i.imgur.com/KyOaPeY.jpg",
+                    "hours": "29.64",
+                    "overall": "7"
+                },
+                {
+                    "game": "Assassin's Creed Revelations",
+                    "img": "http://i.imgur.com/5y0NkZ7.jpg",
+                    "hours": "27.80",
+                    "overall": "6"
+                },
+                {
+                    "game": "Hitman: Absolution",
+                    "img": "http://i.imgur.com/BaEkiq4.jpg",
+                    "hours": "27.75",
+                    "overall": "6"
+                },
+                {
+                    "game": "Counter-Strike: Source",
+                    "img": "http://i.imgur.com/NzFqRcW.jpg",
+                    "hours": "25.97",
+                    "overall": "7"
+                },
+                {
+                    "game": "Bioshock 2",
+                    "img": "http://i.imgur.com/71sK9M7.jpg",
+                    "hours": "18.42",
+                    "overall": "6"
+                }
+            ]
+        },
+        {
+            "value": "29.99",
+            "games": [
+                {
+                    "game": "Batman: Arkham Knight",
+                    "img": "http://i.imgur.com/SPZ5iQG.jpg",
+                    "hours": "132.47",
+                    "overall": "4"
+                },
+                {
+                    "game": "XCOM: Enemy Unknown",
+                    "img": "http://i.imgur.com/KX2slwc.jpg",
+                    "hours": "120.55",
+                    "overall": "7"
+                },
+                {
+                    "game": "Dragon Age: Origins - Ultimate Edition",
+                    "img": "http://i.imgur.com/crnHjih.jpg",
+                    "hours": "87.99",
+                    "overall": "6"
+                },
+                {
+                    "game": "Sid Meyer's Civilization V",
+                    "img": "http://i.imgur.com/d2yD3gL.jpg",
+                    "hours": "72.59",
+                    "overall": "7"
+                },
+                {
+                    "game": "Watch_Dogs",
+                    "img": "http://i.imgur.com/fzHDmg4.jpg",
+                    "hours": "46.04",
+                    "overall": "4"
+                },
+                {
+                    "game": "Crysis 2: Maximum Edition",
+                    "img": "http://i.imgur.com/3zzwvqx.jpg",
+                    "hours": "32.42",
+                    "overall": "6"
+                },
+                {
+                    "game": "Middle-Earth: Shadow of Mordor",
+                    "img": "http://i.imgur.com/bHghq7x.jpg",
+                    "hours": "24.92",
+                    "overall": "6"
+                },
+                {
+                    "game": "Dreamfall Chapters",
+                    "img": "http://i.imgur.com/GPE2cAa.jpg",
+                    "hours": "23.05",
+                    "overall": "6"
+                },
+                {
+                    "game": "Resident Evil 6 / Biohazard 6",
+                    "img": "http://i.imgur.com/rNtWZ6q.jpg",
+                    "hours": "22.47",
+                    "overall": "6"
+                },
+                {
+                    "game": "Bioshock Infinite",
+                    "img": "http://i.imgur.com/jbRHja3.jpg",
+                    "hours": "21.29",
+                    "overall": "7"
+                }
+            ]
+        },
+        {
+            "value": "39.99",
+            "games": [
+                {
+                    "game": "Crusader Kings 2",
+                    "img": "http://i.imgur.com/9zehwv2.jpg",
+                    "hours": "914.12",
+                    "overall": "6"
+                },
+                {
+                    "game": "Europa Universalis IV",
+                    "img": "http://i.imgur.com/C836F1s.jpg",
+                    "hours": "60.3",
+                    "overall": "6"
+                },
+                {
+                    "game": "Kerbal Space Program",
+                    "img": "http://i.imgur.com/QdAK6El.jpg",
+                    "hours": "21.85",
+                    "overall": "7"
+                }
+            ]
+        },
+        {
+            "value": "44.99",
+            "games": [
+                {
+                    "game": "Total War: Rome II",
+                    "img": "http://i.imgur.com/87sA6o8.jpg",
+                    "hours": "61.47",
+                    "overall": "5"
+                }
+            ]
+        }
+    ]
+};
+
+     var approvalRatingTypes = {
+     "types": [
+         { "name": "Rating Unavailable (Removed from Steam)", "color":"rgb(0,0,0)" },
+         { "name": "Overwhelmingly Negative", "color":"rgb(130,105,83)" },
+         { "name": "Very Negative", "color":"rgb(194,59,34)" },
+         { "name": "Mostly Negative", "color":"rgb(255,179,71)" },
+         { "name": "Mixed", "color":"rgb(253,253,150)" },
+         { "name": "Mostly Positive", "color":"rgb(3,192,60)" },
+         { "name": "Very Positive", "color":"rgb(119,158,203)" },
+         { "name": "Overwhelmingly Positive", "color":"rgb(150,111,214)" }
+     ]
+};
+
+     var curDT = 0;
+     var bAnimateOrbit = true;
+     var stopPoint = 0;
+     var curIgnoredTime = 0;
+     var allIgnoredTime = 0;
+     var length = 1800.0;
+     var svg = body.append("svg").attr("width",length).attr("height",length);
+     var initRadius = 100;
+     var radiusMultiplier = 16;
+     var center = length/2;
+     var yScale = d3.scaleLinear().domain([0.00, 45.00])
+     .range([44.99 * radiusMultiplier, 0]);
+     var change = 20;
+     var axis = d3.axisLeft(yScale).ticks(45, "s");
+     svg.append("g").attr("class","yaxis").attr("transform", "translate(" + center + "," + (center - (initRadius + 44.99 * radiusMultiplier)) + ")").call(axis);
+     var labels = svg.selectAll(".yaxis g text");
+     //dataset.price.forEach(drawOrbits);
+     drawOrbits();
+     svg.selectAll(".yaxis g text").style("font-size","10px").attr("transform","rotate(-30)");
+     svg.append("text").attr("x",center - 60)
+     .attr("y","" + (center - (initRadius + 44.99 * radiusMultiplier) - 20))
+     .attr("font-family", "sans-serif")
+     .attr("font-size", "30px")
+     .text("Price ($)");
+     dataset.price.forEach(drawPlanets);
+     approvalRatingTypes.types.forEach(drawLegend);
+     svg.append("text").attr("x",length * .05)
+     .attr("y",length * .05 - 20)
+     .attr("font-family", "sans-serif")
+     .attr("font-size", "20px")
+     .text("Game Ratings Scale");
+
+     function drawLegend(d, i) {
+       svg.append('rect').attr("x",length * .05).attr("y",length * .05 + i * 30).attr("width",20).attr("height",15).style("fill",d.color);
+       svg.append('text').attr("x",length * .05 + 30).attr("y",length * .05 + i * 30 + 15)
+       .attr("font-family", "sans-serif")
+       .attr("font-size", "15px")
+       .text(d.name);
+     }
+
+     function drawPlanets(d) {
+      //I must create the elements this way so they are ordered correctly
+      var radius = initRadius + parseFloat(d.value) * radiusMultiplier;
+       for(var i = 0; i < d.games.length; i++) {
+         var revisedName = d.games[i].game.replace("'","\'");
+         var angle = i * 2 * Math.PI / d.games.length;
+         var xVal = radius * Math.cos(angle) + center; 
+         var yVal = radius * Math.sin(angle) + center;
+         var circle = svg.append("circle").attr("onclick",'gameInfo("' + revisedName + '","' + d.games[i].hours + '","' + angle + '")')
+         .attr("cx",center + radius)
+         .attr("cy",center)
+         .attr("r",radiusMultiplier)
+         .attr("fill",approvalRatingTypes.types[parseInt(d.games[i].overall)].color)
+         .attr("class","planet")
+         .attr("data-time","" + (parseFloat(d.games[i].hours) * center))
+         .attr("data-angle","" + angle)
+         .attr("data-radius","" + radius)
+         .attr("transform","translate(" + (xVal-(center + radius)) + "," + (yVal-center) + ")");
+         var image = svg.append("image").attr("onclick",'gameInfo("' + revisedName + '","' + d.games[i].hours + '","' + angle + '")')
+         .attr("x",center+radius-8).attr("y",center-8)
+         .attr("width","16").attr("height","16").attr("class","gameimg")
+         .attr("xlink:href",d.games[i].img)
+         .attr("data-time","" + (parseFloat(d.games[i].hours) * center))
+         .attr("data-angle","" + angle)
+         .attr("data-radius","" + radius)
+         .attr("transform","translate(" + (xVal-(center + radius)) + "," + (yVal-center) + ")");
+       }
+     }
+
+     function drawOrbits() {
+       var orbits = svg.selectAll("orbit").data(dataset.price)
+       orbits.enter().append("circle").attr("class","orbit")
+       .attr("cx", center)
+       .attr("cy", center)
+       .attr("r", function(d) {
+         return initRadius + parseFloat(d.value) * radiusMultiplier;
+       })
+       .attr("stroke","purple")
+       .attr("stroke-width","4")
+       .attr("fill","white")
+       .attr("fill-opacity","0.0");
+     }
+
+     d3.timer(function() {
+       var dt = Date.now() - allIgnoredTime - curIgnoredTime - now;
+       if(bAnimateOrbit == false) {
+         curIgnoredTime = Date.now() - stopPoint;
+         return;
+       }
+       curDT = dt;
+       //var planets = document.getElementsByClassName("planet");
+       //var icons = document.getElementsByClassName("gameimg");
+       var planets = d3.selectAll(".planet");
+       planets.each(function(d,i) { planetUpdate(d3.select(this), dt); });
+       var icons = d3.selectAll(".gameimg");
+       icons.each(function(d,i) { iconUpdate(d3.select(this), dt) });
+       for(var i = 0; i < planets.length; i++) {
+         //planetUpdate(planets, i, dt);
+         //iconUpdate(icons, i, dt);
+       }
+     });
+
+    function planetUpdate(planet, dt) {
+         var radius = parseFloat(planet.attr("data-radius"));
+         var angle = parseFloat(planet.attr("data-angle"));
+         var time = parseFloat(planet.attr("data-time"));
+         var oldX = parseFloat(planet.attr("cx")); var oldY = parseFloat(planet.attr("cy"));
+         var da = 2 * Math.PI * dt / time;
+         var xVal = radius * Math.cos(angle + da) + center; var yVal = radius * Math.sin(angle + da) + center;
+         var newX = radius * Math.cos(da) + center; var newY = radius * Math.sin(da) + center;
+         var transStr = "translate(" + (xVal-(center + radius)) + "," + (yVal-center) + ")";
+         planet.transition().duration(0).attr("transform",transStr);
+    } 
+
+    function iconUpdate(icon, dt) {
+         var radius = parseFloat(icon.attr("data-radius"));
+         var angle = parseFloat(icon.attr("data-angle"));
+         var time = parseFloat(icon.attr("data-time"));
+         var oldX = parseFloat(icon.attr("x")); var oldY = parseFloat(icon.attr("y"));
+         var da = 2 * Math.PI * dt / time;
+         var xVal = radius * Math.cos(angle + da) + center; var yVal = radius * Math.sin(angle + da) + center;
+         var newX = radius * Math.cos(da) + center; var newY = radius * Math.sin(da) + center;
+         var transStr = "translate(" + (xVal-(center + radius)) + "," + (yVal-center) + ")";
+         icon.transition().duration(0).attr("transform",transStr);
+    } 
+
+    function orbitAnimBtnClicked() {
+      bAnimateOrbit ? bAnimateOrbit = false : bAnimateOrbit = true;
+      allIgnoredTime += curIgnoredTime;
+      curIgnoredTime = 0;
+      stopPoint = Date.now();
+    }
+
+    function gameInfo(name, hours, initAngle) {
+      var time = hours * center;
+      var passedTime = ((2 * Math.PI * curDT / time + parseFloat(initAngle))/(2 * Math.PI) * hours) % hours;
+      var nameBox = document.getElementsByClassName("nameReader")[0];
+      nameBox.value = name;
+      var timeBox = document.getElementsByClassName("timeReader")[0];
+      timeBox.value = (Math.round(passedTime * 1000) / 1000) + " \\ " + hours + " hours";
+    }
+
+    </script>
+  </body>
+</html>
